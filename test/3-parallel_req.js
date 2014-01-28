@@ -5,7 +5,7 @@ var chai = require('chai');
 var doTheStuff = require('../index');
 var sinon = require('sinon');
 
-describe.skip("in parallel!", function(){
+describe("in parallel!", function(){
   beforeEach(function() {
     if(!console.log.restore) sinon.spy(console, "log")
   });

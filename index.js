@@ -5,11 +5,17 @@ var doTheStuff = function(ajax, url, callback){
   return ajax(url).then(function(result){
     console.log(result.data);
     finalMessage += result.data;
-    return ajax(result.url1);
+    return Q.all(
+      [result.url1, result.url2].map(function(url){
+        return ajax(url);
+      })
+    );
   })
-  .then(function(result){
-    console.log(result.data);
-    finalMessage += result.data;
+  .then(function(results){
+    console.log(results[0].data);
+    console.log(results[1].data);
+
+    finalMessage += results[0].data + results[1].data;
     return finalMessage;
   })
   .then(null, function(error){
