@@ -3,6 +3,7 @@ var justWait = require('promise-to-test').justWait;
 var chai = require('chai');
 var doTheStuff = require('../index');
 var sinon = require('sinon');
+var Q = require('q');
 
 describe.skip("tricky async", function(){
   beforeEach(function() {
@@ -73,37 +74,60 @@ describe.skip("tricky async", function(){
 
   it("invokes a callback with the results concatenated", function(done){
     var finished = false;
-    doTheStuff(ajax, first, function(err, result){
+
+    var resultProm = Q.denodeify(doTheStuff)(ajax, first).then(function(result){
+      finished = true;
       chai.assert.include(result, resps[first], "result should include data from first ajax fetch");
       chai.assert.include(result, resps[second], "result should include data from second ajax fetch");
+   }, function(err){
       finished = true;
+      chai.assert.ok(false, "the callback should not be called with an error param (1st argument)");
     });
+
     waitFor(function(){
       chai.assert.ok(finished, "timed out waiting for callback function to be invoked with the results");
-    }).then(function(){done()}, done)
+    })
+    .then(function(){return resultProm;})
+    .then(function(){done()}, done)
   });
 
   it("invokes a callback with a first fetch error", function(done){
     errs.first = "oh dear!";
     var finished = false;
-    doTheStuff(ajax, first, function(err, result){
-      chai.assert.include(err, "oh dear!", "error should be passed to callback");
+
+    var resultProm = Q.denodeify(doTheStuff)(ajax, first).then(function(result){
       finished = true;
+      chai.assert.ok(false, "should not give result when there was an ajax error");
+    }, function(err){
+      finished = true;
+      chai.assert.include(err, "oh dear!", "error must include error");
+      return "fixed";
     });
+
     waitFor(function(){
       chai.assert.ok(finished, "timed out waiting for callback function to be invoked with the error");
-    }).then(function(){done()}, done)
+    }, 900)
+    .then(function(){return resultProm;})
+    .then(function(){done()}, done)
   });
   it("invokes a callback with a second fetch error", function(done){
     errs.second = "ruh roh!";
     var finished = false;
-    doTheStuff(ajax, first, function(err, result){
-      chai.assert.include(err, "ruh roh!", "error should be passed to callback");
+
+    var resultProm = Q.denodeify(doTheStuff)(ajax, first).then(function(result){
       finished = true;
+      chai.assert.ok(false, "should not give result when there was an ajax error");
+    }, function(err){
+      finished = true;
+      chai.assert.include(err, "ruh roh!", "error must include error");
+      return "fixed";
     });
+
     waitFor(function(){
       chai.assert.ok(finished, "timed out waiting for callback function to be invoked with the error");
-    }, 900).then(function(){done()}, done)
+    }, 900)
+    .then(function(){return resultProm;})
+    .then(function(){done()}, done)
 
   });
 });
