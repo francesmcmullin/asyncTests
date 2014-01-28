@@ -5,7 +5,7 @@ var doTheStuff = require('../index');
 var sinon = require('sinon');
 var Q = require('q');
 
-describe("Initial Async", function(){
+describe.skip("Initial Async", function(){
   beforeEach(function() {
     if(!console.log.restore) sinon.spy(console, "log")
   });

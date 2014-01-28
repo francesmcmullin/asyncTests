@@ -6,13 +6,24 @@ var doTheStuff = function(ajax, url, callback){
     console.log(error || result1.data);
     if(error){return callback(error)}
 
-    ajax(result1.url1, function(error, result2){
-      console.log(error || result2.data);
-      if(error){return callback(error)}
+    var results = [];
+    var finished = 0;
 
-      callback(null, result1.data + result2.data);
-    })
+    ajax(result1.url1, checkFinished.bind(null, 1));
+    ajax(result1.url2, checkFinished.bind(null, 2));
+
+    function checkFinished(num, error, result){
+      console.log(error || result.data);
+      results[num] = result.data;
+
+      finished++;
+      if(finished == 2) {
+        callback(null, result1.data + results[1] + results[2]);
+      }
+    };
   })
 };
 
 module.exports = doTheStuff;
+
+
