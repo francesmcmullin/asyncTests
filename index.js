@@ -34,6 +34,6 @@ var doTheStuff = function(ajax, url, callback){
   })
 };
 
-module.exports = doTheStuff;
+module.exports = Q.denodeify(doTheStuff);
 
 

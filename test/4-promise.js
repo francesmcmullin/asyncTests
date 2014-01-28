@@ -3,7 +3,7 @@ var chai = require('chai');
 var doTheStuff = require('../index');
 var sinon = require('sinon');
 
-describe.skip("promises!", function(){
+describe("promises!", function(){
   var first="first", second="second", third="third";
   var resps = {first:"bleep!", second:"bloop!", third:"blop!"};
   var errs  = {};
