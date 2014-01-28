@@ -1,0 +1,109 @@
+var waitFor = require('promise-to-test').waitFor;
+var justWait = require('promise-to-test').justWait;
+var chai = require('chai');
+var doTheStuff = require('../index');
+var sinon = require('sinon');
+
+describe.skip("tricky async", function(){
+  beforeEach(function() {
+    if(!console.log.restore) sinon.spy(console, "log")
+  });
+
+  afterEach(function(){
+    if(console.log.restore) console.log.restore();
+  });
+
+  var first="first", second="second", third="third";
+  var resps = {first:"bleep!", second:"bloop!", third:"blop!"};
+  var errs  = {};
+
+  var ajax = function(url, callback){
+    return justWait(100).then(function(){
+      var err = errs[url];
+      delete errs[url];
+      if(err) throw err;
+      return {data: resps[url], url1:second, url2:third};
+    }).nodeify(callback);
+  }
+
+  it("makes a second fetch", function(done) {
+    doTheStuff(ajax, first);
+
+    waitFor(function(){
+      chai.assert.ok(console.log.calledWith("bleep!"), "first result was not logged");
+      chai.assert.ok(console.log.calledWith("bloop!"), "second result was not logged");
+    }, 500)
+    .then(function(){done()}, done);
+  });
+
+  it("logs an error in the second fetch", function(done){
+    errs.second = "woops!";
+
+    doTheStuff(ajax, first);
+
+    waitFor(function(){
+      chai.assert.ok(console.log.calledWith("bleep!"), "first result was not logged");
+      chai.assert.ok(console.log.calledWith("woops!"), "error was not logged");
+    }, 500)
+    .then(function(){done()}, done);
+  });
+
+  it("logs an error in the first fetch", function(done){
+    errs.first = "argh!";
+
+    doTheStuff(ajax, first);
+
+    waitFor(function(){
+      chai.assert.ok(console.log.calledWith("argh!"), "error was not logged");
+    }, 500)
+    .then(function(){done()}, done);
+  });
+
+  it("halts operations after an error in the first fetch", function(done){
+    errs.first = "yikes!";
+    var spiedAjax = sinon.spy(ajax);
+    doTheStuff(spiedAjax, first);
+
+    waitFor(function(){
+      chai.assert.ok(console.log.calledWith("yikes!"), "error was not logged");
+      chai.assert.equal(spiedAjax.callCount, 1, "called ajax twice, should halt after error");
+    }, 500)
+    .then(function(){done()}, done);
+  });
+
+  it("invokes a callback with the results concatenated", function(done){
+    var finished = false;
+    doTheStuff(ajax, first, function(err, result){
+      chai.assert.include(result, resps[first], "result should include data from first ajax fetch");
+      chai.assert.include(result, resps[second], "result should include data from second ajax fetch");
+      finished = true;
+    });
+    waitFor(function(){
+      chai.assert.ok(finished, "timed out waiting for callback function to be invoked with the results");
+    }).then(function(){done()}, done)
+  });
+
+  it("invokes a callback with a first fetch error", function(done){
+    errs.first = "oh dear!";
+    var finished = false;
+    doTheStuff(ajax, first, function(err, result){
+      chai.assert.include(err, "oh dear!", "error should be passed to callback");
+      finished = true;
+    });
+    waitFor(function(){
+      chai.assert.ok(finished, "timed out waiting for callback function to be invoked with the error");
+    }).then(function(){done()}, done)
+  });
+  it("invokes a callback with a second fetch error", function(done){
+    errs.second = "ruh roh!";
+    var finished = false;
+    doTheStuff(ajax, first, function(err, result){
+      chai.assert.include(err, "ruh roh!", "error should be passed to callback");
+      finished = true;
+    });
+    waitFor(function(){
+      chai.assert.ok(finished, "timed out waiting for callback function to be invoked with the error");
+    }, 900).then(function(){done()}, done)
+
+  });
+});

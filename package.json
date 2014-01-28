@@ -1,0 +1,30 @@
+{
+  "name": "asyncTests",
+  "version": "7.7.7",
+  "description": "Simple test suite for learning about asynchronous operations in JavaScript.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/davecocoa/asyncTests.git"
+  },
+  "keywords": [
+    "asynchronous",
+    "test",
+    "learn"
+  ],
+  "author": "David McMullin",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/davecocoa/asyncTests/issues"
+  },
+  "dependencies": {
+    "mocha": "~1.17.1",
+    "promise-to-test": "0.0.2",
+    "q": "~1.0.0",
+    "chai": "~1.8.1",
+    "sinon": "~1.7.3"
+  }
+}
