@@ -5,7 +5,7 @@ var doTheStuff = function(ajax, url, callback){
     console.log(result.data);
 
     ajax(result.url1, function(error, result){
-      console.log(result.data);
+      console.log(error || result.data);
     })
   })
 };
