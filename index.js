@@ -7,6 +7,10 @@ var doTheStuff = function(ajax, url, callback){
   })
   .then(function(result){
     console.log(result.data);
+  })
+  .then(null, function(error){
+    console.log(error);
+    throw error;
   });
 };
 
