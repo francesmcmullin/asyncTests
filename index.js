@@ -1,15 +1,9 @@
 var Q = require('q');
 
 var doTheStuff = function(ajax, url, callback){
-  var result = ajax(url)
-  function checkForResult(){
-    if(result.data) {
-      console.log(result.data);
-    } else {
-      setTimeout(checkForResult, 10);
-    }
-  }
-  checkForResult();
+  ajax(url, function(error, result){
+    console.log(result.data);
+  })
 };
 
 module.exports = doTheStuff;
