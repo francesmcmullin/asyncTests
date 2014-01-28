@@ -14,6 +14,11 @@ var doTheStuff = function(ajax, url, callback){
 
     function checkFinished(num, error, result){
       console.log(error || result.data);
+
+      if(error) {
+        return callback(error);
+      }
+
       results[num] = result.data;
 
       finished++;
