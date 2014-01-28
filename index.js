@@ -8,6 +8,7 @@ var doTheStuff = function(ajax, url, callback){
 
     var results = [];
     var finished = 0;
+    var stopped = false;
 
     ajax(result1.url1, checkFinished.bind(null, 1));
     ajax(result1.url2, checkFinished.bind(null, 2));
@@ -16,7 +17,11 @@ var doTheStuff = function(ajax, url, callback){
       console.log(error || result.data);
 
       if(error) {
-        return callback(error);
+        if(!stopped){
+          stopped = true;
+          callback(error);
+        }
+        return;
       }
 
       results[num] = result.data;
