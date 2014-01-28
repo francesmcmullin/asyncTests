@@ -5,7 +5,7 @@ Just a suite of tests for learning about asynchronous operations in JavaScript
 
 To play, just clone, `npm install` and then `mocha`. If that doesn't work, it may help to install mocha globally `npm install -g mocha` (may need `sudo`) or you can just access it at `./node_modules/mocha/bin/mocha`.
 
-You will notice some tests are failing (on `master` anyway). It's your job to make them pass. Hopefully the messages are informative, the steps are also outlined below.
+You will notice some tests are failing (on `master` anyway). It's your job to make them pass. Hopefully the messages are informative, the steps are also outlined below. Initially, the later tests are disabled (`pending`), so you only see 3 errors instead of 15. Once you have the first suite passing, open the second one (`2-multiple_req.js`) and enable it by removing `.skip`.
 
 ## Goals:
 1. Call the AJAX function with the URL
