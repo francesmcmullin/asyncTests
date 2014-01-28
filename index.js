@@ -8,7 +8,7 @@ var doTheStuff = function(ajax, url, callback){
 
     ajax(result1.url1, function(error, result2){
       console.log(error || result2.data);
-      if(error){return}
+      if(error){return callback(error)}
 
       callback(null, result1.data + result2.data);
     })
