@@ -22,17 +22,18 @@ describe("Initial Async", function(){
     return res.nodeify(callback);
   }
 
-  it("calls the ajax", function(){
+  it("calls the ajax", function(done){
     var called = false
     var ajax = function(url, callback){
       called = true
-      var output = Q({data:"yay!"}).nodeify(callback);
-      output.data = "yay!";
-      return output;
+      return Q({data:"yay!"}).nodeify(callback);
     }
 
     doTheStuff(ajax)
-    chai.assert.ok(called, "ajax not called")
+    waitFor(function(){
+      chai.assert.ok(called, "ajax not called")
+    }, 300)
+    .then(function(){done()}, done);
   })
 
   it("calls the ajax and then logs the result", function(done){
@@ -49,8 +50,8 @@ describe("Initial Async", function(){
     sinon.spy(global, "setInterval");
 
     doTheStuff(ajax);
-    chai.assert.equal(global.setTimeout.callCount, 1, "setTimeout still in use");
-    chai.assert.equal(global.setTimeout.callCount, 1, "setInterval still in use");
+    chai.assert.ok(global.setTimeout.callCount < 2, "setTimeout still in use");
+    chai.assert.ok(global.setTimeout.callCount < 2, "setInterval still in use");
 
     waitFor(function(){
       chai.assert.ok(console.log.calledWith("bleep bloop!"), "result was not logged");
