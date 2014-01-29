@@ -25,4 +25,4 @@ If you get stuck, there is a `solutions` branch of this repo with (roughly) 1 co
 
 If you find earlier tests are failing and you think they shouldn't, try disabling (add `.skip` after `describe` or `it` to disable a suite or single test) all the tests but the one you're interested in. I encountered some issues like this in the solution branch, I need to examine `mocha` a bit more to understand why results are being mixed up.
 
-For the even more ambitious, there is a `promise-solutions` branch, where the problems are solved using promises from the start. The ajax function does in fact return a promise, hurrah! Unfortunately the first suite of tests does not actually pass with promises, so those should be disabled from the start.
+For the even more ambitious, there is a `promise-solutions` branch, where the problems are solved using promises from the start. The ajax function does in fact return a promise, hurrah!
