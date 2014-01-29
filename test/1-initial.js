@@ -3,6 +3,7 @@ var waitFor = require('promise-to-test').waitFor;
 var chai = require('chai');
 var doTheStuff = require('../index');
 var sinon = require('sinon');
+var Q = require('q');
 
 describe("Initial Async", function(){
   beforeEach(function() {
