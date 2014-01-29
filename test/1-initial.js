@@ -25,8 +25,9 @@ describe("Initial Async", function(){
     var called = false
     var ajax = function(url, callback){
       called = true
-      if(callback) callback(null, {data:"yay!"})
-      return {data:"yay!"}
+      var output = Q({data:"yay!"}).nodeify(callback);
+      output.data = "yay!";
+      return output;
     }
 
     doTheStuff(ajax)
