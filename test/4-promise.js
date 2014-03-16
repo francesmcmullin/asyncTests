@@ -17,14 +17,14 @@ describe.skip("promises!", function(){
     }).nodeify(callback);
   }
 
-  it("makes initial fetch, then url1 and url2 concurrently, returns a promise", function(done){
+  it("makes initial fetch, then url1 and url2 concurrently, returns a promise", function(){
     var result = doTheStuff(ajax, first);
     chai.assert.ok(result, "should return a promise");
     chai.assert.ok(result.then, "should return a promise with a then method");
-    result.then(function(res){
+    return result.then(function(res){
       chai.assert.include(res, resps[first], "result must include initial data");
       chai.assert.include(res, resps[second], "result must include url1 data");
       chai.assert.include(res, resps[third], "result must include url2 data");
-    }).then(function(){done()}, done);
-  })
+    });
+  });
 })

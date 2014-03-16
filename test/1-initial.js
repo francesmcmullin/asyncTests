@@ -22,7 +22,7 @@ describe("Initial Async", function(){
     return res.nodeify(callback);
   }
 
-  it("calls the ajax", function(done){
+  it("calls the ajax", function(){
     var called = false
     var ajax = function(url, callback){
       called = true
@@ -30,22 +30,20 @@ describe("Initial Async", function(){
     }
 
     doTheStuff(ajax)
-    waitFor(function(){
+    return waitFor(function(){
       chai.assert.ok(called, "ajax not called")
-    }, 300)
-    .then(function(){done()}, done);
+    }, 300);
   })
 
-  it("calls the ajax and then logs the result", function(done){
+  it("calls the ajax and then logs the result", function(){
     doTheStuff(ajax);
 
-    waitFor(function(){
+    return waitFor(function(){
       chai.assert.ok(console.log.calledWith("bleep bloop!"), "result was not logged");
-    }, 500)
-    .then(function(){done()}, done);
+    }, 500);
   })
 
-  it("uses the callback instead of looping", function(done){
+  it("uses the callback instead of looping", function(){
     sinon.spy(global, "setTimeout");
     sinon.spy(global, "setInterval");
 
@@ -53,9 +51,8 @@ describe("Initial Async", function(){
     chai.assert.ok(global.setTimeout.callCount < 2, "setTimeout still in use");
     chai.assert.ok(global.setTimeout.callCount < 2, "setInterval still in use");
 
-    waitFor(function(){
+    return waitFor(function(){
       chai.assert.ok(console.log.calledWith("bleep bloop!"), "result was not logged");
-    }, 500)
-    .then(function(){done()}, done);
+    }, 500);
   })
 });

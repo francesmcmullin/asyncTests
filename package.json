@@ -21,7 +21,7 @@
     "url": "https://github.com/davecocoa/asyncTests/issues"
   },
   "dependencies": {
-    "mocha": "~1.17.1",
+    "mocha": "~1.18.0",
     "promise-to-test": "0.0.2",
     "q": "~1.0.0",
     "chai": "~1.8.1",

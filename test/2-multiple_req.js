@@ -27,52 +27,48 @@ describe.skip("tricky async", function(){
     }).nodeify(callback);
   }
 
-  it("makes a second fetch", function(done) {
+  it("makes a second fetch", function() {
     doTheStuff(ajax, first);
 
-    waitFor(function(){
+    return waitFor(function(){
       chai.assert.ok(console.log.calledWith("bleep!"), "first result was not logged");
       chai.assert.ok(console.log.calledWith("bloop!"), "second result was not logged");
-    }, 500)
-    .then(function(){done()}, done);
+    }, 500);
   });
 
-  it("logs an error in the second fetch", function(done){
+  it("logs an error in the second fetch", function(){
     errs.second = "woops!";
 
     doTheStuff(ajax, first);
 
-    waitFor(function(){
+    return waitFor(function(){
       chai.assert.ok(console.log.calledWith("bleep!"), "first result was not logged");
       chai.assert.ok(console.log.calledWith("woops!"), "error was not logged");
-    }, 500)
-    .then(function(){done()}, done);
+    }, 500);
   });
 
-  it("logs an error in the first fetch", function(done){
+  it("logs an error in the first fetch", function(){
     errs.first = "argh!";
 
     doTheStuff(ajax, first);
 
-    waitFor(function(){
+    return waitFor(function(){
       chai.assert.ok(console.log.calledWith("argh!"), "error was not logged");
-    }, 500)
-    .then(function(){done()}, done);
+    }, 500);
   });
 
-  it("halts operations after an error in the first fetch", function(done){
+  it("halts operations after an error in the first fetch", function(){
     errs.first = "yikes!";
     var spiedAjax = sinon.spy(ajax);
     doTheStuff(spiedAjax, first);
 
-    waitFor(function(){
+    return waitFor(function(){
       chai.assert.ok(console.log.calledWith("yikes!"), "error was not logged");
       chai.assert.equal(spiedAjax.callCount, 1, "called ajax twice, should halt after error");
-    }, 500)
-    .then(function(){done()}, done);
+    }, 500);
   });
 
-  it("invokes a callback with the results concatenated", function(done){
+  it("invokes a callback with the results concatenated", function(){
     var finished = false;
 
     var resultProm = Q.denodeify(doTheStuff)(ajax, first).then(function(result){
@@ -84,14 +80,13 @@ describe.skip("tricky async", function(){
       chai.assert.ok(false, "the callback should not be called with an error param (1st argument)");
     });
 
-    waitFor(function(){
+    return waitFor(function(){
       chai.assert.ok(finished, "timed out waiting for callback function to be invoked with the results");
     })
-    .then(function(){return resultProm;})
-    .then(function(){done()}, done)
+    .then(function(){return resultProm;});
   });
 
-  it("invokes a callback with a first fetch error", function(done){
+  it("invokes a callback with a first fetch error", function(){
     errs.first = "oh dear!";
     var finished = false;
 
@@ -104,13 +99,12 @@ describe.skip("tricky async", function(){
       return "fixed";
     });
 
-    waitFor(function(){
+    return waitFor(function(){
       chai.assert.ok(finished, "timed out waiting for callback function to be invoked with the error");
     }, 900)
-    .then(function(){return resultProm;})
-    .then(function(){done()}, done)
+    .then(function(){return resultProm;});
   });
-  it("invokes a callback with a second fetch error", function(done){
+  it("invokes a callback with a second fetch error", function(){
     errs.second = "ruh roh!";
     var finished = false;
 
@@ -123,11 +117,9 @@ describe.skip("tricky async", function(){
       return "fixed";
     });
 
-    waitFor(function(){
+    return waitFor(function(){
       chai.assert.ok(finished, "timed out waiting for callback function to be invoked with the error");
     }, 900)
-    .then(function(){return resultProm;})
-    .then(function(){done()}, done)
-
+    .then(function(){return resultProm;});
   });
 });

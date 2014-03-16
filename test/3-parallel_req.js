@@ -26,7 +26,7 @@ describe.skip("in parallel!", function(){
       return {data: resps[url], url1:second, url2:third};
     }).nodeify(callback);
   }
-  it("fetches both url1 and url2", function(done){
+  it("fetches both url1 and url2", function(){
     var finished = false;
     var resultProm = Q.denodeify(doTheStuff)(ajax, first).then(function(result){
       finished = true;
@@ -34,13 +34,12 @@ describe.skip("in parallel!", function(){
       chai.assert.include(result, resps[second], "result must include url1 data");
       chai.assert.include(result, resps[third], "result must include url2 data");
     });
-    waitFor(function(){
+    return waitFor(function(){
       chai.assert.ok(finished, "timed out waiting for callback function to be invoked with the results");
     }, 900)
-    .then(function(){return resultProm;})
-    .then(function(){done()}, done)
+    .then(function(){return resultProm;});
   });
-  it("handles error from url1", function(done){
+  it("handles error from url1", function(){
     var finished = false;
     errs[second] = "broken!";
     var resultProm = Q.denodeify(doTheStuff)(ajax, first).then(function(result){
@@ -51,13 +50,12 @@ describe.skip("in parallel!", function(){
       chai.assert.include(err, "broken!", "error must include error");
       return "fixed";
     });
-    waitFor(function(){
+    return waitFor(function(){
       chai.assert.ok(finished, "timed out waiting for callback function to be invoked with the error");
     }, 900)
-    .then(function(){return resultProm;})
-    .then(function(){done()}, done)
+    .then(function(){return resultProm;});
   });
-  it("handles error from url2", function(done){
+  it("handles error from url2", function(){
     var finished = false;
     errs[third] = "not good!";
     var resultProm = Q.denodeify(doTheStuff)(ajax, first).then(function(result){
@@ -72,9 +70,8 @@ describe.skip("in parallel!", function(){
       chai.assert.ok(finished, "timed out waiting for callback function to be invoked with the error");
     }, 900)
     .then(function(){return resultProm;})
-    .then(function(){done()}, done)
   });
-  it("only calls the callback once", function(done){
+  it("only calls the callback once", function(){
     var callback = sinon.spy();
     errs[second] = "watch out!";
     errs[third] = "oh NOES!";
@@ -83,6 +80,5 @@ describe.skip("in parallel!", function(){
     .then(function(){
       chai.assert.equal(callback.callCount, 1, "callback should only be called once!");
     })
-    .then(function(){done();}, done);
   });
 })
