@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "mocha": "~1.18.0",
-    "promise-to-test": "0.0.2",
+    "promise-to-test": "0.0.5",
     "q": "~1.0.0",
     "chai": "~1.8.1",
     "sinon": "~1.7.3"
